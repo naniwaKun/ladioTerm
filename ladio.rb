@@ -30,7 +30,7 @@ for item in bangumi do
 	print "\e[35m"
 	print "No." + num.to_s + "\n"
 	print "\e[0m"
-	num = + 1
+	num = num + 1
 	print "Title:\t" + item["NAM"] + "\n"
 	print "DJ:\t" + item["DJ"] + "\n"
 	print "mount:\t" + item["MNT"]
