@@ -23,16 +23,22 @@ for item in heads do
 	bangumi.push(item)
 end
 
-num = 0
+num = bangumi.length
+
 for item in bangumi do
 	print "\n"
+	print "\e[35m"
 	print "No." + num.to_s + "\n"
-	num = num + 1
+	print "Type Byte Number :"
+	num = num - 1
 	print "Title:\t" + item["NAM"] + "\n"
 	print "DJ:\t" + item["DJ"] + "\n"
 	print "mount:\t" + item["MNT"]
+	print "listener:\t" + item["CLN"]
 	print "\n"
 end
+
+bangumi.reverse
 
 print "\e[35m"
 print "Type Byte Number :"
