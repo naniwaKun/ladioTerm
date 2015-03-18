@@ -23,14 +23,14 @@ for item in heads do
 	bangumi.push(item)
 end
 
-num = bangumi.length
+num = 0
 
 for item in bangumi do
 	print "\n"
 	print "\e[35m"
 	print "No." + num.to_s + "\n"
 	print "\e[0m"
-	num = num - 1
+	num = + 1
 	print "Title:\t" + item["NAM"] + "\n"
 	print "DJ:\t" + item["DJ"] + "\n"
 	print "mount:\t" + item["MNT"]
