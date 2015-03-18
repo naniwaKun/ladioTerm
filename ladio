@@ -1,0 +1,16 @@
+#!/bin/sh
+base=$(cd $(dirname $0);pwd)
+base="${base}/ladio.rb"
+
+if [  $# == 0 ]; then
+	#clear
+	ruby $base
+	#clear
+	if [  -e ~/.ladio ]; then
+		url=`cat ~/.ladio`
+		#clear
+		mpv  $url
+		#mpv -ao alsa $url
+
+	fi
+fi
