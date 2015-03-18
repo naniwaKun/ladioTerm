@@ -23,7 +23,7 @@ for item in heads do
 	bangumi.push(item)
 end
 
-num = bangumi.length -1
+num = bangumi.length
 
 for item in bangumi do
 	print "\n"
