@@ -2,6 +2,7 @@
 require 'kconv'
 require 'open-uri'
 require 'json'
+
 head = URI("http://yp.ladio.net/stats/list.v2.dat").read.kconv(Kconv::UTF8)
 head.gsub!('"','\"')
 heads = head.split("\n\n")
@@ -22,18 +23,19 @@ for item in heads do
 	item = JSON.parse(json)
 	bangumi.push(item)
 end
-
-num = 0
-
+bangumi = bangumi.sort_by do |u|
+    [u["CLN"].to_i]
+end
+num = bangumi.length
 for item in bangumi do
 	print "\n"
 	print "\e[35m"
 	print "No." + num.to_s + "\n"
 	print "\e[0m"
-	num = num + 1
+	num = num - 1
 	print "Title:\t" + item["NAM"] + "\n"
 	print "DJ:\t" + item["DJ"] + "\n"
-	print "mount:\t" + item["MNT"]
+	print "mount:\t" + item["MNT"] + "\n"
 	print "listener:\t" + item["CLN"]
 	print "\n"
 end
@@ -42,7 +44,7 @@ print "\e[35m"
 print "Type Byte Number :"
 print "\e[0m"
 num = gets.chomp
-num = num.to_i
+num = bangumi.length - num.to_i
 
 url = "http://"+bangumi[num]["SRV"]+":"+bangumi[num]["PRT"]+bangumi[num]["MNT"]+".m3u"
 File.write ENV['HOME'] + '/.ladio', url
