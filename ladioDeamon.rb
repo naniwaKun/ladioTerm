@@ -22,7 +22,7 @@ def file_check
       if exist_process(pid)
          exit
       else
-         p "please remove "+dir+"/.lock_file"
+         p "please remove "+LOCKFILE
          exit
       end
    else
