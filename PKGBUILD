@@ -21,5 +21,6 @@ pkgver() {
 package() {
         cd "$srcdir/ladioTerm"
         install -Dm755 "ladio" "${pkgdir}/usr/bin/ladio"
+        install -Dm755 "ladioRec" "${pkgdir}/usr/bin/ladioRec"
         install  -Dm755 "ladio.rb" "${pkgdir}/usr/bin/ladio.rb"
 }
