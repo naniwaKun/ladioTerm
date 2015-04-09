@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 mount = ARGV[0]
 dir = Dir.home + "/ladio/" + mount
-FileUtils.mkdir_p(dir)
+FileUtils.mkdir_p dir 
 LOCKFILE = dir + "/.lock_file"
 
 def file_check
