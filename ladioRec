@@ -1,5 +1,10 @@
 #!/usr/bin/env ruby
 
+if ARGV[0] == nil then
+p "usage ladioRec mountpoint"
+exit
+end
+
 def mkladio(path)
 	return if FileTest.exist?(path);
 	parent = File::dirname(path);
