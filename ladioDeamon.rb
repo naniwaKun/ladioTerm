@@ -3,7 +3,7 @@
 def mkladio(path)
   return if FileTest.exist?(path);
   parent = File::dirname(path);
-  mkdir2(parent);
+  mkladio(parent);
   Dir::mkdir(path);
 end
  
