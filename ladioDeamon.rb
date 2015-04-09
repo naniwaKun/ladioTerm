@@ -22,8 +22,7 @@ def file_check
       if exist_process(pid)
          exit
       else
-         File.delete(LOCKFILE)
-         file_check
+         p "please remove "+LOCKFILE
          exit
       end
    else
