@@ -47,8 +47,53 @@ def exist_process(pid)
    end
 end
 
+def rec
+  require 'kconv'
+require 'open-uri'
+require 'json'
+
+head = URI("http://yp.ladio.net/stats/list.v2.dat").read.kconv(Kconv::UTF8)
+head.gsub!('"','\"')
+heads = head.split("\n\n")
+
+bangumi = []
+for item in heads do
+	item.gsub!(/^/,'"')
+	item.gsub!(/$/,'"')
+	item.gsub!(/\n/,",\n")
+	item = ('{'+ item + '}')
+	atoms = item.split("\n")
+
+	json = "";
+	for atom in atoms do
+		atom =~ /(^.*)=(.*$)/
+		json = json + $1+'":"'+$2
+	end
+	item = JSON.parse(json)
+	bangumi.push(item)
+end
+bangumi = bangumi.sort_by do |u|
+    [u["CLN"].to_i]
+end
+url = "0000"
+
+for item in bangumi do
+  if "/"+ARGV[0] == item["MNT"] then
+    url = item["PRT"]
+    break
+  end
+end
+
+  if url == "0000" then
+    url = ""
+  else
+url = "http://std1.ladio.net:" + url + "/" + ARGV[0] + ".m3u"
+  end
+print "streamripper " + url
+end
+
 file_check
 
-sleep 60
+rec
 
 File.delete(LOCKFILE)
