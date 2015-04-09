@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 mount = ARGV[0]
 dir = Dir.home + "/ladio/" + mount
 Dir::mkdir(dir)
