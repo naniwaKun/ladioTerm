@@ -1,7 +1,15 @@
 #!/usr/bin/env ruby
+
+def mkladio(path)
+  return if FileTest.exist?(path);
+  parent = File::dirname(path);
+  mkdir2(parent);
+  Dir::mkdir(path);
+end
+ 
 mount = ARGV[0]
 dir = Dir.home + "/ladio/" + mount
-FileUtils.mkdir_p dir 
+mkladio(dir)
 LOCKFILE = dir + "/.lock_file"
 
 def file_check
