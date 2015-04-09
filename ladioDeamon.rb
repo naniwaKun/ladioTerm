@@ -20,10 +20,9 @@ def file_check
          pid = f.read.chomp!.to_i
       }
       if exist_process(pid)
-         print ("既に起動中のヤツがいるです")
          exit
       else
-         print ("プロセス途中で死んでファイル残ったままっぽいっす")
+         print ("please remove " + dir + "/.lock_file.")
          exit
       end
    else
