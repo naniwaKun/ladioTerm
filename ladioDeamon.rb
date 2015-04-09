@@ -1,12 +1,12 @@
 #!/usr/bin/env ruby
 
 def mkladio(path)
-  return if FileTest.exist?(path);
-  parent = File::dirname(path);
-  mkladio(parent);
-  Dir::mkdir(path);
+	return if FileTest.exist?(path);
+	parent = File::dirname(path);
+	mkladio(parent);
+	Dir::mkdir(path);
 end
- 
+
 mount = ARGV[0]
 dir = Dir.home + "/ladio/" + mount
 mkladio(dir)
@@ -14,84 +14,83 @@ LOCKFILE = dir + "/.lock_file"
 
 def file_check
 
-   if File.exist?(LOCKFILE)
-      pid = 0
-      File.open(LOCKFILE, "r"){|f|
-         pid = f.read.chomp!.to_i
-      }
-      if exist_process(pid)
-         exit
-      else
-         p "please remove "+LOCKFILE
-         exit
-      end
-   else
-      File.open(LOCKFILE, "w"){|f|
-         locked = f.flock(File::LOCK_EX | File::LOCK_NB)
-         if locked
-            f.puts $$
-         else
-            $logger.error("lock failed -> pid: #{$$}")
-         end
-      }
-   end
+	if File.exist?(LOCKFILE)
+		pid = 0
+		File.open(LOCKFILE, "r"){|f|
+			pid = f.read.chomp!.to_i
+		}
+		if exist_process(pid)
+			exit
+		else
+			p "please remove "+LOCKFILE
+			exit
+		end
+	else
+		File.open(LOCKFILE, "w"){|f|
+			locked = f.flock(File::LOCK_EX | File::LOCK_NB)
+			if locked
+				f.puts $$
+			else
+				$logger.error("lock failed -> pid: #{$$}")
+			end
+		}
+	end
 end
 
 def exist_process(pid)
-   begin
-      gid = Process.getpgid(pid)
-      return true
-   rescue => ex
-      puts ex
-      return false
-   end
+	begin
+		gid = Process.getpgid(pid)
+		return true
+	rescue => ex
+		puts ex
+		return false
+	end
 end
 
 def rec(dir)
-  require 'kconv'
-require 'open-uri'
-require 'json'
+	require 'kconv'
+	require 'open-uri'
+	require 'json'
 
-head = URI("http://yp.ladio.net/stats/list.v2.dat").read.kconv(Kconv::UTF8)
-head.gsub!('"','\"')
-heads = head.split("\n\n")
+	head = URI("http://yp.ladio.net/stats/list.v2.dat").read.kconv(Kconv::UTF8)
+	head.gsub!('"','\"')
+	heads = head.split("\n\n")
 
-bangumi = []
-for item in heads do
-	item.gsub!(/^/,'"')
-	item.gsub!(/$/,'"')
-	item.gsub!(/\n/,",\n")
-	item = ('{'+ item + '}')
-	atoms = item.split("\n")
+	bangumi = []
+	for item in heads do
+		item.gsub!(/^/,'"')
+		item.gsub!(/$/,'"')
+		item.gsub!(/\n/,",\n")
+		item = ('{'+ item + '}')
+		atoms = item.split("\n")
 
-	json = "";
-	for atom in atoms do
-		atom =~ /(^.*)=(.*$)/
-		json = json + $1+'":"'+$2
+		json = "";
+		for atom in atoms do
+			atom =~ /(^.*)=(.*$)/
+			json = json + $1+'":"'+$2
+		end
+		item = JSON.parse(json)
+		bangumi.push(item)
 	end
-	item = JSON.parse(json)
-	bangumi.push(item)
-end
-bangumi = bangumi.sort_by do |u|
-    [u["CLN"].to_i]
-end
-url = "0000"
-title = ""
+	bangumi = bangumi.sort_by do |u|
+		[u["CLN"].to_i]
+	end
+	url = "0000"
+	title = ""
 
-for item in bangumi do
-  if "/"+ARGV[0] == item["MNT"] then
-    url = item["PRT"]
-	title = item["NAM"] + "-" + item["DJ"]
-    break
-  end
-end
+	for item in bangumi do
+		if "/"+ARGV[0] == item["MNT"] then
+			url = item["PRT"]
+			title = item["NAM"] + "-" + item["DJ"]
+			break
+		end
+	end
 
-  if url != "0000" then
-url = "http://std1.ladio.net:" + url + "/" + ARGV[0] + ".m3u"
-usage = "streamripper " + url +  " -s -d " + dir + " --codeset-id3=UTF-16 --codeset-filesys=UTF-8 --codeset-metadata=Shift_JIS -a " + title
-p usage
-`#{usage}`
-  end
+	if url != "0000" then
+		url = "http://std1.ladio.net:" + url + "/" + ARGV[0] + ".m3u"
+		usage = "streamripper " + url +  " -s -d " + dir + " --codeset-id3=UTF-16 --codeset-filesys=UTF-8 --codeset-metadata=Shift_JIS -a " + title
+		`#{usage}`
+	end
 end
 
 file_check
