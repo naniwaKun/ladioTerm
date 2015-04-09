@@ -5,9 +5,8 @@ FileUtils.mkdir_p dir
 LOCKFILE = dir + "/.lock_file"
 
 def file_check
-   # ファイルチェック
+
    if File.exist?(LOCKFILE)
-      # pidのチェック
       pid = 0
       File.open(LOCKFILE, "r"){|f|
          pid = f.read.chomp!.to_i
@@ -20,9 +19,7 @@ def file_check
          exit
       end
    else
-   # なければLOCKファイル作成
       File.open(LOCKFILE, "w"){|f|
-         # LOCK_NBのフラグもつける。もしぶつかったとしてもすぐにやめさせる。
          locked = f.flock(File::LOCK_EX | File::LOCK_NB)
          if locked
             f.puts $$
@@ -33,7 +30,6 @@ def file_check
    end
 end
 
-# プロセスの生き死に確認
 def exist_process(pid)
    begin
       gid = Process.getpgid(pid)
@@ -48,5 +44,4 @@ file_check
 
 sleep 60
 
-# 終了時のLOCKFILE削除
 File.delete(LOCKFILE)
