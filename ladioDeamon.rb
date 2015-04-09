@@ -47,7 +47,7 @@ def exist_process(pid)
    end
 end
 
-def rec
+def rec(dir)
   require 'kconv'
 require 'open-uri'
 require 'json'
@@ -76,24 +76,26 @@ bangumi = bangumi.sort_by do |u|
     [u["CLN"].to_i]
 end
 url = "0000"
+title = ""
 
 for item in bangumi do
   if "/"+ARGV[0] == item["MNT"] then
     url = item["PRT"]
+	title = item["NAM"] + "-" + item["DJ"]
     break
   end
 end
 
-  if url == "0000" then
-    url = ""
-  else
+  if url != "0000" then
 url = "http://std1.ladio.net:" + url + "/" + ARGV[0] + ".m3u"
+usage = "streamripper " + url +  " -s -d " + dir + " --codeset-id3=UTF-16 --codeset-filesys=UTF-8 --codeset-metadata=Shift_JIS -a " + title
+p usage
+`#{usage}`
   end
-print "streamripper " + url
 end
 
 file_check
 
-rec
+rec(dir)
 
 File.delete(LOCKFILE)
